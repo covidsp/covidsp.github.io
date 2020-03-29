@@ -72,3 +72,37 @@ Highcharts.mapChart('container', {
             }
         }]
     });
+
+    Highcharts.chart('container_avanco', {
+        chart:{
+            borderColor: '#021254',
+            borderRadius: 40,
+            borderWidth: 3,
+            type: 'line'
+        },
+        exporting: { enabled: false },
+        title: {
+            text: 'Casos - Estado SP'
+        },
+        yAxis: {
+            title: {
+                text: 'Quantidade de casos'
+            }
+        },
+        
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats:{ 
+                day: "%e-%b-%y",
+                month: "%b-%y"
+            }
+        },
+        legend: {
+            enabled:false
+        },
+        series: [{
+            name: 'Casos',
+            data: av_sp
+        }]
+    
+    });
