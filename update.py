@@ -4,6 +4,7 @@ import json
 import datetime
 from sys import exit
 import pandas as pd
+import time
 #date = datetime.datetime.now().strftime('%Y-%m-%d')
 date = datetime.datetime(2020,3,27).strftime('%Y-%m-%d')
 CSV_URL = 'https://brasil.io/dataset/covid19/caso?date='+date+'&state=SP&place_type=city&format=csv'
@@ -35,7 +36,7 @@ def updateGit():
     cp = cmd.run("dir", check=True, shell=True)
     cp = cmd.run("git add --all", check=True, shell=True)
     #print(cp)
-    message = "update the repository"
-    cp = cmd.run(f"git commit -m '{message}'", check=True, shell=True)
+    time.sleep(2)
+    cp = cmd.run(f"git commit -m Commit", check=True, shell=True)
     cp = cmd.run("git push -u origin master -f", check=True, shell=True)
 updateGit()
