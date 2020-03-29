@@ -26,9 +26,9 @@ with requests.Session() as s:
     #df = df.groupby('city_ibge_code').agg({'confirmed':'sum','deaths':'sum'}).reset_index()
     jsondata = df.to_json(orient='records')
     jsondata = 'var cases = '+jsondata
-    with open('files/Casos.json', 'w') as outfile:
+    with open('C:/Covid_Oficial/covidsp.github.io/files/Casos.json', 'w') as outfile:
         outfile.write(jsondata)
-    with open('files/date.json', 'w') as outfile:
+    with open('C:/Covid_Oficial/covidsp.github.io/files/date.json', 'w') as outfile:
         outfile.write('var date_at ="'+ date+'"')
 
     CSV_URL = 'https://brasil.io/dataset/covid19/caso?state=SP&place_type=city&format=csv'
@@ -52,7 +52,7 @@ with requests.Session() as s:
     df_grp = df.groupby('date').confirmed.sum().reset_index().rename(columns={'date':'x','confirmed':'y'})
     df_grp = df_grp[df_grp.y>0]
     jsondata = df_grp.to_json(orient='records')
-    with open('av_sp.json', 'w') as outfile:
+    with open('C:/Covid_Oficial/covidsp.github.io/av_sp.json', 'w') as outfile:
         outfile.write('var av_sp = '+jsondata)
     print ('Updating...')
 def updateGit():
