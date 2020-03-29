@@ -30,6 +30,30 @@ with requests.Session() as s:
         outfile.write(jsondata)
     with open('files/date.json', 'w') as outfile:
         outfile.write('var date_at ="'+ date+'"')
+
+    CSV_URL = 'https://brasil.io/dataset/covid19/caso?state=SP&place_type=city&format=csv'
+with requests.Session() as s:
+    download = s.get(CSV_URL)
+
+    decoded_content = download.content.decode('utf-8')
+
+    cr = csv.reader(decoded_content.splitlines(), delimiter=',')
+    my_list = list(cr)
+    df = pd.DataFrame(my_list)
+    if df.empty:
+        exit(0)
+    df.columns = df.iloc[0]
+    df = df.drop(0)
+    date = df.iloc[0].date
+    df['confirmed'] = df['confirmed'].astype(int)
+    df.loc[df.deaths=='','deaths'] = '0'
+    df['deaths'] = df['deaths'].astype(int)
+    df['date'] = pd.to_datetime(df.date)
+    df_grp = df.groupby('date').confirmed.sum().reset_index().rename(columns={'date':'x','confirmed':'y'})
+    df_grp = df_grp[df_grp.y>0]
+    jsondata = df_grp.to_json(orient='records')
+    with open('av_sp.json', 'w') as outfile:
+        outfile.write('var av_sp = '+jsondata)
     print ('Updating...')
 def updateGit():
     import subprocess as cmd
