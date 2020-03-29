@@ -1,9 +1,9 @@
 // Prepare random data
-console.log(cases)
 data = []
 max_cases = 0
 total_cases = 0
 total_deaths = 0
+$("#date_at").text(date_at)
 $.each(leitos,function(m,n){
     conf = 0
     deaths = 0
@@ -13,7 +13,6 @@ $.each(leitos,function(m,n){
         deaths = parseInt(j.deaths)
         total_cases = total_cases+parseInt(j.confirmed)
         total_deaths = total_deaths+parseInt(j.deaths)
-        console.log(total_cases)
         $("#total_cases").text(total_cases)
         $("#total_deaths").text(total_deaths)
         if (parseInt(j.confirmed)>max_cases){
@@ -23,7 +22,6 @@ $.each(leitos,function(m,n){
     data.push([n.Cod,conf,deaths,n.Qtd_existente])
         
 })
-console.log(SPdata)
 Highcharts.mapChart('container', {
         chart: {
             map: SPdata,
