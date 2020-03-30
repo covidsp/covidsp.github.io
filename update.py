@@ -5,9 +5,9 @@ import datetime
 from sys import exit
 import pandas as pd
 import time
-#date = datetime.datetime.now().strftime('%Y-%m-%d')
-date = datetime.datetime(2020,3,27).strftime('%Y-%m-%d')
-CSV_URL = 'https://brasil.io/dataset/covid19/caso?date='+date+'&state=SP&place_type=city&format=csv'
+date = datetime.datetime.now().strftime('%Y-%m-%d')
+#date = datetime.datetime(2020,3,27).strftime('%Y-%m-%d')
+CSV_URL = 'https://brasil.io/dataset/covid19/caso?state=SP&place_type=city&is_last=True&format=csv'
 with requests.Session() as s:
     download = s.get(CSV_URL)
 
