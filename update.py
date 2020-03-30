@@ -8,6 +8,7 @@ import time
 date = datetime.datetime.now().strftime('%Y-%m-%d')
 #date = datetime.datetime(2020,3,27).strftime('%Y-%m-%d')
 CSV_URL = 'https://brasil.io/dataset/covid19/caso?state=SP&place_type=city&is_last=True&format=csv'
+CSV_URL = 'https://brasil.io/dataset/covid19/caso?state=SP&place_type=city&format=csv'
 with requests.Session() as s:
     download = s.get(CSV_URL)
 
@@ -22,14 +23,22 @@ with requests.Session() as s:
     df = df.drop(0)
     date = df.iloc[0].date
     df['confirmed'] = df['confirmed'].astype(int)
+    df.loc[df.deaths=='','deaths'] = '0'
     df['deaths'] = df['deaths'].astype(int)
-    #df = df.groupby('city_ibge_code').agg({'confirmed':'sum','deaths':'sum'}).reset_index()
-    jsondata = df.to_json(orient='records')
-    jsondata = 'var cases = '+jsondata
-    with open('C:/Covid_Oficial/covidsp.github.io/files/Casos.json', 'w') as outfile:
-        outfile.write(jsondata)
+    df['date'] = pd.to_datetime(df.date)
+    jsonall = {}
+    for d in range(0,(df.date.max()-df.date.min()).days+1):    
+        if df[df.date==df.date.min()+datetime.timedelta(days=d)].shape[0]>0 and (df.date.min()+datetime.timedelta(days=d)).strftime('%d-%m-%Y') != '24-03-2020':
+            print ((df.date.min()+datetime.timedelta(days=d)).strftime('%d-%m-%Y'))
+            df_2 = df[df.date==df.date.min()+datetime.timedelta(days=d)]
+            df_2['date'] = df_2['date'].dt.strftime('%d-%m-%Y')
+            jsonall[(df.date.min()+datetime.timedelta(days=d)).strftime('%d-%m-%Y')] = df_2.to_dict(orient='records')
+        else:
+            jsonall[(df.date.min()+datetime.timedelta(days=d)).strftime('%d-%m-%Y')] = df_2.to_dict(orient='records')
+    with open('Casos.json', 'w') as outfile:
+        outfile.write('var cases = '+str(jsonall))
     with open('C:/Covid_Oficial/covidsp.github.io/files/date.json', 'w') as outfile:
-        outfile.write('var date_at ="'+ date+'"')
+        outfile.write('var date_at ="'+ df.date.max().strftime('%d-%m-%Y')+'"')
 
     CSV_URL = 'https://brasil.io/dataset/covid19/caso?state=SP&place_type=city&format=csv'
 with requests.Session() as s:
