@@ -45,6 +45,7 @@ Highcharts.chart('container_avanco', {
 
 function getData(cases_n){
     cases_data = []
+    ids = {}
     max_cases = 0
     total_cases = 0
     total_deaths = 0
@@ -64,7 +65,25 @@ function getData(cases_n){
             }}
         })
         cases_data.push([n.Cod,conf,deaths,n.Qtd_existente])
+        ids[n.Cod] = conf
             
+    })
+    $.each(cases_n,function(i,j){
+        if (!(j.city_ibge_code in ids)){
+        console.log(j)
+        conf = parseInt(j.confirmed)
+        deaths = parseInt(j.deaths)
+        total_cases = total_cases+parseInt(j.confirmed)
+        total_deaths = total_deaths+parseInt(j.deaths)
+        $("#total_cases").text(total_cases)
+        $("#total_deaths").text(total_deaths)
+        if (parseInt(j.confirmed)>max_cases){
+            max_cases=parseInt(j.confirmed)
+        }
+        cases_data.push([j.city_ibge_code,conf,deaths,0])
+        ids[j.city_ibge_code] = conf
+    
+    }
     })
     return cases_data
 }
