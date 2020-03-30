@@ -35,7 +35,7 @@ with requests.Session() as s:
             jsonall[(df.date.min()+datetime.timedelta(days=d)).strftime('%d-%m-%Y')] = df_2.to_dict(orient='records')
         else:
             jsonall[(df.date.min()+datetime.timedelta(days=d)).strftime('%d-%m-%Y')] = df_2.to_dict(orient='records')
-    with open('Casos.json', 'w') as outfile:
+    with open('C:/Covid_Oficial/covidsp.github.io/files/Casos.json', 'w') as outfile:
         outfile.write('var cases = '+str(jsonall))
     with open('C:/Covid_Oficial/covidsp.github.io/files/date.json', 'w') as outfile:
         outfile.write('var date_at ="'+ df.date.max().strftime('%d-%m-%Y')+'"')
@@ -61,7 +61,7 @@ with requests.Session() as s:
     df_grp = df.groupby('date').confirmed.sum().reset_index().rename(columns={'date':'x','confirmed':'y'})
     df_grp = df_grp[df_grp.y>0]
     jsondata = df_grp.to_json(orient='records')
-    with open('C:/Covid_Oficial/covidsp.github.io/av_sp.json', 'w') as outfile:
+    with open('C:/Covid_Oficial/covidsp.github.io/files/av_sp.json', 'w') as outfile:
         outfile.write('var av_sp = '+jsondata)
     print ('Updating...')
 def updateGit():
