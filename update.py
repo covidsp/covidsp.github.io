@@ -25,6 +25,9 @@ with requests.Session() as s:
     df['confirmed'] = df['confirmed'].astype(int)
     df.loc[df.deaths=='','deaths'] = '0'
     df['deaths'] = df['deaths'].astype(int)
+    df.loc[df.confirmed<df.deaths,'confirmed'] = df['deaths']
+    df['death_rate'] = (100*(df['deaths']/df['confirmed'])).round(1)
+    df_3 = df.copy()
     df['date'] = pd.to_datetime(df.date)
     jsonall = {}
     for d in range(0,(df.date.max()-df.date.min()).days+1):    
@@ -50,7 +53,6 @@ with requests.Session() as s:
     my_list = list(cr)
     df = pd.DataFrame(my_list)
     if df.empty:
-        print('exit')
         exit(0)
     df.columns = df.iloc[0]
     df = df.drop(0)
@@ -58,20 +60,13 @@ with requests.Session() as s:
     df['confirmed'] = df['confirmed'].astype(int)
     df.loc[df.deaths=='','deaths'] = '0'
     df['deaths'] = df['deaths'].astype(int)
+    df.loc[df.confirmed<df.deaths,'confirmed'] = df['deaths']
     df['date'] = pd.to_datetime(df.date)
     df_grp = df.groupby('date').confirmed.sum().reset_index().rename(columns={'date':'x','confirmed':'y'})
     df_grp = df_grp[df_grp.y>0]
     jsondata = df_grp.to_json(orient='records')
-    df_grp['y2'] = (df_grp['y']-df_grp['y'].shift(1)).fillna(df_grp['y'])
-    df_grp = df_grp.drop(columns=['y']).rename(columns={'y2':'y'})
-    jsondata2 = df_grp.to_json(orient='records')
-    
-    df_grp = df.groupby('date').deaths.sum().reset_index().rename(columns={'date':'x','deaths':'y'})
-    df_grp = df_grp[df_grp.y>0]
-    jsondata3 = df_grp.to_json(orient='records')
     with open('C:/Covid_Oficial/covidsp.github.io/files/av_sp.json', 'w') as outfile:
-        outfile.write('var av_sp = '+jsondata +'; var av_sp_day = '+jsondata2+'; var av_sp_death = '+jsondata3)
-    
+        outfile.write('var av_sp = '+jsondata)
     print ('Updating...')
 def updateGit():
     import subprocess as cmd
@@ -81,4 +76,4 @@ def updateGit():
     time.sleep(2)
     cp = cmd.run(f"git commit -m Commit", check=True, shell=True)
     cp = cmd.run("git push -u origin master -f", check=True, shell=True)
-#updateGit()
+updateGit()
