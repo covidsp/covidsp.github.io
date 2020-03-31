@@ -67,19 +67,27 @@ function getData(cases_n){
     $.each(leitos,function(m,n){
         conf = 0
         deaths = 0
+        rate = 0
+        date = '27-03-2020'
         $.each(cases_n,function(i,j){
             if (j.city_ibge_code==n.Cod){
             conf = parseInt(j.confirmed)
             deaths = parseInt(j.deaths)
+            console.log(j.death_rate)
+            rate = j.death_rate
+            date = j.date
             total_cases = total_cases+parseInt(j.confirmed)
             total_deaths = total_deaths+parseInt(j.deaths)
+            total_rate = ((total_deaths/total_cases)*100).toFixed(1).toString() + ' %'
             $("#total_cases").text(total_cases)
             $("#total_deaths").text(total_deaths)
+            $("#total_rate").text(total_rate)
             if (parseInt(j.confirmed)>max_cases){
                 max_cases=parseInt(j.confirmed)
             }}
         })
-        cases_data.push([n.Cod,conf,deaths,n.Qtd_existente])
+        console.log(rate)
+        cases_data.push([n.Cod,conf,deaths,n.Qtd_existente,rate,date])
         ids[n.Cod] = conf
             
     })
@@ -88,14 +96,18 @@ function getData(cases_n){
         console.log(j)
         conf = parseInt(j.confirmed)
         deaths = parseInt(j.deaths)
+        rate = j.death_rate
+        date = j.date
         total_cases = total_cases+parseInt(j.confirmed)
         total_deaths = total_deaths+parseInt(j.deaths)
+        total_rate = ((total_deaths/total_cases)*100).toFixed(1).toString() + ' %'
         $("#total_cases").text(total_cases)
         $("#total_deaths").text(total_deaths)
+        $("#total_rate").text(total_rate)
         if (parseInt(j.confirmed)>max_cases){
             max_cases=parseInt(j.confirmed)
         }
-        cases_data.push([j.city_ibge_code,conf,deaths,0])
+        cases_data.push([j.city_ibge_code,conf,deaths,0,rate,date])
         ids[j.city_ibge_code] = conf
     
     }
@@ -138,7 +150,7 @@ function update(date){
 
             series: [{
                 data: cases_data,
-                keys: ['Brasil_m_2', 'value','death','leitos'],
+                keys: ['Brasil_m_2', 'value','death','leitos','rate','date'],
                 joinBy: 'Brasil_m_2',
                 name: 'Cases',
                 states: {
@@ -148,7 +160,7 @@ function update(date){
                 },
                 tooltip:{
                     headerFormat: '<span style="font-size:10px">{point.properties.Brasil_mun}</span><br/>',
-                    pointFormat: '<b>{point.properties.Brasil_mun}<b><br/>Casos Comprovados: <b>{point.value:.0f}</b><br/>Obitos: <b>{point.death:.0f}</b><br/>Leitos: <b>{point.leitos:.0f}</b><br/>',
+                    pointFormat: '<b>{point.properties.Brasil_mun}<b><br/>Casos Comprovados: <b>{point.value:.0f}</b><br/>Obitos: <b>{point.death:.0f}</b><br/>Leitos: <b>{point.leitos:.0f}</b><br/>Taxa de mortalidade: <b>{point.rate:.1f} %</b><br/>Última atualização: <b>{point.date}</b><br/>',
                 },
                 dataLabels: {
                     enabled: false,
