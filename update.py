@@ -24,6 +24,7 @@ with requests.Session() as s:
     df['confirmed'] = df['confirmed'].astype(int)
     df.loc[df.deaths=='','deaths'] = '0'
     df['deaths'] = df['deaths'].astype(int)
+    df.loc[df.confirmed<df.deaths,'confirmed'] = df['deaths']
     df['death_rate'] = (100*(df['deaths']/df['confirmed'])).round(1)
     df['date'] = pd.to_datetime(df.date)
     jsonall = {}
