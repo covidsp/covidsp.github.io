@@ -20,11 +20,16 @@ Highcharts.chart('container_avanco', {
     title: {
         text: 'Casos - Estado SP'
     },
-    yAxis: {
+    yAxis: [{
         title: {
-            text: 'Quantidade de casos'
+            text: 'Quantidade - Acumulada'
         }
-    },
+    },{
+        title: {
+            text: 'Quantidade de casos - Diários'
+        },
+        opposite:true
+    }],
     
     xAxis: {
         type: 'datetime',
@@ -39,6 +44,16 @@ Highcharts.chart('container_avanco', {
     series: [{
         name: 'Casos',
         data: av_sp
+    },{
+        name: 'Óbitos',
+        data: av_sp_death,
+        color:'red'
+    },{
+        name: 'Casos - Diários',
+        data: av_sp_day,
+        type:'column',
+        yAxis:1,
+        zIndex:-1
     }]
 
 });
