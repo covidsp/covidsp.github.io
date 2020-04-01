@@ -21,11 +21,11 @@ with requests.Session() as s:
     df.columns = df.iloc[0]
     df = df.drop(0)
     date = df.iloc[0].date
-    df['confirmed'] = df['confirmed'].astype(int)
+    df['confirmed'] = df['confirmed'].astype(int).fillna(0)
     df.loc[df.deaths=='','deaths'] = '0'
-    df['deaths'] = df['deaths'].astype(int)
+    df['deaths'] = df['deaths'].astype(int).fillna(0)
     df.loc[df.confirmed<df.deaths,'confirmed'] = df['deaths']
-    df['death_rate'] = (100*(df['deaths']/df['confirmed'])).round(1)
+    df['death_rate'] = (100*(df['deaths']/df['confirmed'])).round(1).fillna(0)
     df['date'] = pd.to_datetime(df.date)
     jsonall = {}
     for d in range(0,(df.date.max()-df.date.min()).days+1):    
